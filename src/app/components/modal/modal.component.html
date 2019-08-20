@@ -1,0 +1,50 @@
+<ng-template #content let-modal>
+  <div class="modal-header">
+    <h4 class="modal-title" id="modal-title">About Polly is a Cracker</h4>
+    <button
+      type="button"
+      class="close"
+      aria-label="Close"
+      (click)="modal.dismiss('Cross click')"
+    >
+      <span aria-hidden="true">&times;</span>
+    </button>
+  </div>
+  <div class="modal-body">
+    <p>
+      This project was generated with
+      <a
+        href="https://github.com/angular/angular-cli"
+        target="_blank"
+        rel="noopener noreferrer"
+        >Angular CLI version 8.2.0.</a
+      >
+    </p>
+    <p>
+      Humour provided by the groan-worthy,<a
+        href="https://icanhazdadjoke.com/api"
+        target="_blank"
+        rel="noopener noreferrer"
+        >icanhazdadjoke</a
+      >
+    </p>
+    <p>
+      Voices are made possible by
+      <a
+        href="https://aws.amazon.com/polly/"
+        target="_blank"
+        rel="noopener noreferrer"
+        >Amazon Polly</a
+      >
+    </p>
+  </div>
+  <div class="modal-footer">
+    <button
+      type="button"
+      class="btn btn-link text-muted"
+      (click)="modal.dismiss('Cross Click')"
+    >
+      close
+    </button>
+  </div>
+</ng-template>

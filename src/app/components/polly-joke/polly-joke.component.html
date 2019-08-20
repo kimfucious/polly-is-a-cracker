@@ -1,0 +1,23 @@
+<div class="d-flex flex-column align-items-center text-center">
+  <app-polly-form (voiceChange)="changeVoice($event)"></app-polly-form>
+  <button
+    *ngIf="!showSpinner"
+    class="btn btn-outline-danger mb-4"
+    (click)="getNewJoke()"
+  >
+    Tell Joke
+  </button>
+  <p *ngIf="showSpinner" class="lead">Synthesizing Joke. Wait for it...</p>
+  <div *ngIf="joke?.joke" class="card border-danger mt-2">
+    <div class="card-body">
+      <em>
+        {{ joke.joke }}
+      </em>
+    </div>
+  </div>
+  <p *ngFor="let alert of alerts" class="mt-5">
+    <ngb-alert [type]="alert.type" (close)="closeAlert(alert)">{{
+      alert.message
+    }}</ngb-alert>
+  </p>
+</div>

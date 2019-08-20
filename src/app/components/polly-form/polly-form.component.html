@@ -1,0 +1,15 @@
+<form #voiceForm="ngForm">
+  <div class="form-group">
+    <label for="voice">Select Voice</label>
+    <select
+      (change)="onVoiceChange()"
+      class="custom-select mb-3"
+      id="voice"
+      required
+      [(ngModel)]="model.voice"
+      name="voice"
+    >
+      <option *ngFor="let voice of voices" [value]="voice">{{ voice }}</option>
+    </select>
+  </div>
+</form>
