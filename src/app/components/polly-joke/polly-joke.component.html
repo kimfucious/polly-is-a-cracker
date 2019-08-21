@@ -2,11 +2,17 @@
   <app-polly-form (voiceChange)="changeVoice($event)"></app-polly-form>
   <button
     *ngIf="!showSpinner"
-    class="btn btn-outline-danger mb-4"
+    class="btn btn-outline-danger mb-3"
     (click)="getNewJoke()"
   >
     Tell Joke
   </button>
+  <a
+    *ngIf="!showSpinner"
+    class="btn btn-link text-muted mb-3"
+    [routerLink]="['/byoj']"
+    >Got your own joke?</a
+  >
   <p *ngIf="showSpinner" class="lead">Synthesizing Joke. Wait for it...</p>
   <div *ngIf="joke?.joke" class="card border-danger mt-2">
     <div class="card-body">
