@@ -28,7 +28,9 @@ export class PollyJokeComponent implements OnInit, OnDestroy {
 
   constructor(private jokeService: JokeService) {}
   ngOnDestroy() {
-    this.subscription.unsubscribe();
+    if (this.subscription) {
+      this.subscription.unsubscribe();
+    }
   }
   ngOnInit() {
     this.speechParams = {
