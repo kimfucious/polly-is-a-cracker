@@ -1,0 +1,45 @@
+<form
+  #byojForm="ngForm"
+  class="d-flex flex-column"
+  (ngSubmit)="onSubmit(byojForm)"
+>
+  <div class="form-group">
+    <label for="voice">Select Voice</label>
+    <select
+      (change)="onVoiceChange()"
+      [(ngModel)]="model.voice"
+      class="custom-select mb-3"
+      id="voice"
+      name="voice"
+      required
+    >
+      <option *ngFor="let voice of voices" [value]="voice">{{ voice }}</option>
+    </select>
+  </div>
+  <div class="form-group">
+    <label for="joke">Tell Your Joke</label>
+    <textarea
+      [(ngModel)]="model.joke"
+      class="form-control joke"
+      id="joke"
+      name="joke"
+      placeholder="Did you hear about the restaurant on the moon? Great food, no atmosphere!"
+      rows="5"
+    ></textarea>
+    <small
+      [ngClass]="model.joke.length > 300 ? 'text-danger' : 'text-muted'"
+      id="jokeHelpText"
+      class="form-text"
+    >
+      {{ model.joke.length }} / 300
+    </small>
+  </div>
+  <button
+    [hidden]="showSpinner"
+    [disabled]="model.joke.length > 300 || model.joke.length < 3"
+    class="btn btn-outline-danger mb-3"
+    type="submit"
+  >
+    Speak!
+  </button>
+</form>
