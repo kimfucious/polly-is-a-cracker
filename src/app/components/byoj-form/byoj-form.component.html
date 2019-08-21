@@ -1,8 +1,4 @@
-<form
-  #byojForm="ngForm"
-  class="d-flex flex-column"
-  (ngSubmit)="onSubmit(byojForm)"
->
+<form #byojForm="ngForm" class="d-flex flex-column" (ngSubmit)="onSubmit()">
   <div class="form-group">
     <label for="voice">Select Voice</label>
     <select
