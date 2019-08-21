@@ -1,6 +1,7 @@
 import { Component, OnInit, HostListener } from "@angular/core";
 import { JokeService } from "src/app/services/joke.service";
 import { Joke } from "src/app/models/Joke";
+import { SpeechParams } from "src/app/models/SpeechParams";
 import { Subscription } from "rxjs";
 import { config, CognitoIdentityCredentials, Polly } from "aws-sdk";
 import { Alert } from "../../models/Alert";
@@ -21,20 +22,21 @@ export class PollyJokeComponent implements OnInit {
   joke: Joke;
   temp: Joke;
   showSpinner: boolean;
+  speechParams: SpeechParams;
   subscription: Subscription;
-
-  speechParams = {
-    Engine: "neural",
-    OutputFormat: "mp3",
-    SampleRate: "16000",
-    Text: "",
-    TextType: "text",
-    VoiceId: "Joanna"
-  };
 
   constructor(private jokeService: JokeService) {}
 
   ngOnInit() {
+    this.speechParams = {
+      Engine: "neural",
+      OutputFormat: "mp3",
+      SampleRate: "16000",
+      Text: "",
+      TextType: "text",
+      VoiceId: "Joanna"
+    };
+
     this.audio.addEventListener("canplaythrough", () => {
       this.showSpinner = false;
       this.joke = this.temp;
@@ -66,10 +68,8 @@ export class PollyJokeComponent implements OnInit {
     this.alerts = [];
   }
   speakText() {
-    // const polly = new Polly({ apiVersion: "2016-06-10" });
-    const polly = new Polly();
-    // I don't know why 'polly' is bitching about expectations.
-    const signer = new Polly.Presigner(this.speechParams, polly);
+    const polly = new Polly({ apiVersion: "2016-06-10" });
+    const signer = new Polly.Presigner();
 
     signer.getSynthesizeSpeechUrl(
       this.speechParams,
