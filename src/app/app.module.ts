@@ -11,6 +11,9 @@ import { PollyFooterComponent } from "./components/polly-footer/polly-footer.com
 import { JokeService } from "./services/joke.service";
 import { PollyJokeComponent } from "./components/polly-joke/polly-joke.component";
 import { ModalComponent } from "./components/modal/modal.component";
+import { AppRoutingModule } from "./app-routing.module";
+import { ByojFormComponent } from "./components/byoj-form/byoj-form.component";
+import { ByojJokeComponent } from "./components/byoj-joke/byoj-joke.component";
 
 @NgModule({
   declarations: [
@@ -19,9 +22,17 @@ import { ModalComponent } from "./components/modal/modal.component";
     PollyFormComponent,
     PollyFooterComponent,
     PollyJokeComponent,
-    ModalComponent
+    ModalComponent,
+    ByojFormComponent,
+    ByojJokeComponent
   ],
-  imports: [BrowserModule, FormsModule, HttpClientModule, NgbModule],
+  imports: [
+    BrowserModule,
+    FormsModule,
+    HttpClientModule,
+    NgbModule,
+    AppRoutingModule
+  ],
   providers: [JokeService],
   bootstrap: [AppComponent]
 })
