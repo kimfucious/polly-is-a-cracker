@@ -1,4 +1,4 @@
-# 🦜 Polly is a Cracker
+# 🦜 Polly is a Cracker [![Netlify Status](https://api.netlify.com/api/v1/badges/15921d6a-1bbb-4df5-b638-7ba0337b860a/deploy-status)](https://app.netlify.com/sites/serene-haibt-4aed40/deploys)
 
 ## About
 
