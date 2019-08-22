@@ -5,7 +5,8 @@ import { ByojJokeComponent } from "./components/byoj-joke/byoj-joke.component";
 
 const routes: Routes = [
   { path: "", component: PollyJokeComponent },
-  { path: "byoj", component: ByojJokeComponent }
+  { path: "byoj", component: ByojJokeComponent },
+  { path: "**", component: PollyJokeComponent }
 ];
 
 @NgModule({
