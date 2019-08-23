@@ -49,23 +49,13 @@ export class PollyJokeComponent implements OnInit, OnDestroy {
     if (this.subscription) {
       this.subscription.unsubscribe();
     }
-    this.isLoaded = false;
     this.clearAlerts();
     this.joke = { id: "", joke: "", status: null };
     console.log("Getting new joke...");
     this.subscription = this.jokeService.getRandomJoke().subscribe(joke => {
       this.temp = joke;
       this.speechParams.Text = joke.joke;
-      this.pollyService
-        .getPollyUrl(this.speechParams)
-        .then(url => {
-          this.setupHowler(url);
-        })
-        .catch(error => {
-          console.log("Error preparing joke: ", error);
-          this.alerts.push({ type: "danger", message: error.message });
-          this.app.tick();
-        });
+      this.doPolly();
     });
   }
 
@@ -76,6 +66,7 @@ export class PollyJokeComponent implements OnInit, OnDestroy {
     } else {
       delete this.speechParams.Engine;
     }
+    this.doPolly();
   }
   closeAlert(alert: Alert) {
     this.alerts.splice(this.alerts.indexOf(alert), 1);
@@ -83,7 +74,19 @@ export class PollyJokeComponent implements OnInit, OnDestroy {
   clearAlerts() {
     this.alerts = [];
   }
-
+  doPolly() {
+    this.isLoaded = false;
+    this.pollyService
+      .getPollyUrl(this.speechParams)
+      .then(url => {
+        this.setupHowler(url);
+      })
+      .catch(error => {
+        console.log("Error preparing joke: ", error);
+        this.alerts.push({ type: "danger", message: error.message });
+        this.app.tick();
+      });
+  }
   setupHowler(sourceUrl: string) {
     console.log("creating howler...");
     console.log(sourceUrl);
