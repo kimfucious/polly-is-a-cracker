@@ -3,5 +3,55 @@
 ## About
 
 - This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 8.2.0.
+- Audio handled by [howler.js](https://www.npmjs.com/package/howler)
+- Base Polly code example started from [here](https://docs.aws.amazon.com/code-samples/latest/catalog/javascript-browserstart-polly.html.html)
 - Humour provided by the groan-worthy, [icanhazdadjoke](https://icanhazdadjoke.com/api) API.
 - Voices are made possible by [Amazon Polly](https://aws.amazon.com/polly/)
+
+## Notes
+
+### The aws-sdk does not seem to work out of the box with Angular.
+
+To get this working:
+
+1. Add the following line to `polyfills.ts`:
+
+```js
+(window as any).global = window;
+```
+
+2. add @types/node package (via npm or yarn)
+3. change the following line in `tsconfig.app.json`
+
+from this:
+
+```js
+"types": []
+```
+
+to this:
+
+```js
+"types": ["node"]
+```
+
+_Your mileage may vary_
+
+### Change detection in callbacks needs a tick
+
+💡 I learned that change detection in Angular needs an [app.tick()](https://angular.io/api/core/ApplicationRef#tick) to kick it in the pants, when the change occurs within a callback function.
+
+### Unwanted arguments from base code example
+
+😑 Working from the Polly base code example [here](https://docs.aws.amazon.com/code-samples/latest/catalog/javascript-browserstart-polly.html.html), I found that the following lines where throwing errors in my angular app:
+
+```js
+var polly = new AWS.Polly({ apiVersion: "2016-06-10" });
+var signer = new AWS.Polly.Presigner(speechParams, polly);
+```
+
+I wound up removing the first line and the all of the arguments on the `signer` to get things working without errors.
+
+```js
+const signer = new AWS.Polly.Presigner();
+```

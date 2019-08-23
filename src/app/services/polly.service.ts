@@ -1,9 +1,9 @@
 import { Injectable } from "@angular/core";
-import { config, CognitoIdentityCredentials, Polly } from "aws-sdk";
+import * as AWS from "aws-sdk";
 import { SpeechParams } from "../models/SpeechParams";
 
-config.region = "us-west-2";
-config.credentials = new CognitoIdentityCredentials({
+AWS.config.region = "us-west-2";
+AWS.config.credentials = new AWS.CognitoIdentityCredentials({
   IdentityPoolId: "us-west-2:ff9b3fd3-e705-489e-a20f-62a22f58b1b0"
 });
 
@@ -15,8 +15,7 @@ export class PollyService {
 
   getPollyUrl(speechParams: SpeechParams): Promise<string> {
     console.log("Getting url from Polly...");
-    const signer = new Polly.Presigner();
-    console.log(typeof signer);
+    const signer = new AWS.Polly.Presigner();
     return new Promise((resolve, reject) => {
       signer.getSynthesizeSpeechUrl(
         speechParams,
