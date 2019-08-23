@@ -35,11 +35,6 @@ export class ByojJokeComponent implements OnInit {
       TextType: "text",
       VoiceId: "Joanna"
     };
-
-    // this.audio.addEventListener("canplaythrough", () => {
-    //   this.showSpinner = false;
-    //   this.audio.play();
-    // });
   }
   changeJoke(joke: string) {
     this.joke = joke;
