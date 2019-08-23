@@ -1,20 +1,31 @@
 <div class="d-flex flex-column align-items-center text-center">
   <app-polly-form (voiceChange)="changeVoice($event)"></app-polly-form>
   <button
-    *ngIf="!showSpinner"
-    class="btn btn-outline-danger mb-3"
-    (click)="getNewJoke()"
+    [disabled]="!isLoaded"
+    *ngIf="joke.id !== temp.id"
+    (click)="tellJoke()"
+    class="btn btn-success mb-3"
   >
     Tell Joke
   </button>
+  <button
+    [disabled]="!isPlayed"
+    *ngIf="joke.id !== '9999' && joke.id === temp.id"
+    (click)="getNewJoke()"
+    class="btn btn-danger mb-3"
+  >
+    Get Another Joke
+  </button>
   <a
-    *ngIf="!showSpinner"
+    [hidden]="!isLoaded"
     class="btn btn-link text-muted mb-3"
     [routerLink]="['/byoj']"
     >Got your own joke?</a
   >
-  <p *ngIf="showSpinner" class="lead">Synthesizing Joke. Wait for it...</p>
-  <div *ngIf="joke?.joke" class="card border-danger mt-2">
+  <p [hidden]="isLoaded" class="lead">
+    Synthesizing Joke. Wait for it...
+  </p>
+  <div [hidden]="!joke?.joke" class="card border-danger mt-2">
     <div class="card-body">
       <em>
         {{ joke.joke }}
