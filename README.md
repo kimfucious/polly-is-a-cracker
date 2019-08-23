@@ -37,11 +37,11 @@ to this:
 
 _Your mileage may vary_
 
-### Change detection in callbacks needs a tick
+### Change detection in callbacks needs a tick in the pants
 
-💡 I learned that change detection in Angular needs an [app.tick()](https://angular.io/api/core/ApplicationRef#tick) to kick it in the pants, when the change occurs within a callback function.
+💡 I learned that change detection in Angular needs an [app.tick()](https://angular.io/api/core/ApplicationRef#tick) when the change occurs within a callback function.
 
-### Unwanted arguments from base code example
+### Unneeded/unwanted arguments from base code example
 
 😑 Working from the Polly base code example [here](https://docs.aws.amazon.com/code-samples/latest/catalog/javascript-browserstart-polly.html.html), I found that the following lines where throwing errors in my angular app:
 
