@@ -16,6 +16,7 @@
     <label for="joke">Tell Your Joke</label>
     <textarea
       [(ngModel)]="model.joke"
+      (ngModelChange)="onJokeChange()"
       class="form-control joke"
       id="joke"
       name="joke"

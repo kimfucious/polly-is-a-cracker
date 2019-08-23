@@ -1,15 +1,8 @@
+import { Alert } from "../../models/Alert";
 import { Component, OnInit } from "@angular/core";
-import { JokeService } from "src/app/services/joke.service";
-import { Joke } from "src/app/models/Joke";
+import { PollyService } from "src/app/services/polly.service";
 import { SpeechParams } from "src/app/models/SpeechParams";
 import { Subscription } from "rxjs";
-import { config, CognitoIdentityCredentials, Polly } from "aws-sdk";
-import { Alert } from "../../models/Alert";
-
-config.region = "us-west-2";
-config.credentials = new CognitoIdentityCredentials({
-  IdentityPoolId: "us-west-2:ff9b3fd3-e705-489e-a20f-62a22f58b1b0"
-});
 
 @Component({
   selector: "app-byoj-joke",
@@ -20,12 +13,11 @@ export class ByojJokeComponent implements OnInit {
   alerts: Alert[];
   audio = new Audio();
   audioSource: string;
-  joke: Joke;
-  temp: Joke;
+  joke: string;
   showSpinner: boolean;
   speechParams: SpeechParams;
   subscription: Subscription;
-  constructor() {}
+  constructor(private pollyService: PollyService) {}
 
   ngOnInit() {
     this.speechParams = {
@@ -39,9 +31,11 @@ export class ByojJokeComponent implements OnInit {
 
     this.audio.addEventListener("canplaythrough", () => {
       this.showSpinner = false;
-      this.joke = this.temp;
       this.audio.play();
     });
+  }
+  changeJoke(joke: string) {
+    this.joke = joke;
   }
   changeVoice(voice: string) {
     this.speechParams.VoiceId = voice;
@@ -50,6 +44,9 @@ export class ByojJokeComponent implements OnInit {
     } else {
       delete this.speechParams.Engine;
     }
+    if (this.joke) {
+      this.sayNewUserJoke(this.joke, true);
+    }
   }
   closeAlert(alert: Alert) {
     this.alerts.splice(this.alerts.indexOf(alert), 1);
@@ -57,27 +54,25 @@ export class ByojJokeComponent implements OnInit {
   clearAlerts() {
     this.alerts = [];
   }
-  sayNewUserJoke(joke: string) {
-    this.speechParams.Text = joke;
-    this.showSpinner = true;
-    this.speakText();
-  }
-  speakText() {
-    const signer = new Polly.Presigner();
 
-    signer.getSynthesizeSpeechUrl(
-      this.speechParams,
-      700,
-      (error: Error, url: string) => {
-        if (error) {
-          console.log(error);
-          this.alerts.push({ type: "danger", message: error.message });
-          this.showSpinner = false;
-        } else {
-          this.audio.src = url;
-          this.audio.load();
-        }
+  startNewUserJoke(joke: string) {
+    this.joke = joke;
+    this.sayNewUserJoke(joke);
+  }
+  async sayNewUserJoke(joke: string, isVoiceChanged: boolean = false) {
+    if (this.speechParams.Text === joke && !isVoiceChanged) {
+      console.log("Repeat!");
+      this.audio.play();
+    } else {
+      this.speechParams.Text = joke;
+      this.showSpinner = true;
+      try {
+        const url = await this.pollyService.getPollyUrl(this.speechParams);
+        this.audio.src = url;
+        this.audio.load();
+      } catch (error) {
+        this.alerts.push({ type: "danger", message: error });
       }
-    );
+    }
   }
 }
