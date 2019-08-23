@@ -14,7 +14,6 @@ export class PollyService {
   constructor() {}
 
   getPollyUrl(speechParams: SpeechParams): Promise<string> {
-    console.log("Getting url from Polly...");
     const signer = new AWS.Polly.Presigner();
     return new Promise((resolve, reject) => {
       signer.getSynthesizeSpeechUrl(
