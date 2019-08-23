@@ -4,7 +4,6 @@
     (newUserJoke)="sayNewUserJoke($event)"
     [showSpinner]="showSpinner"
   ></app-byoj-form>
-  <p *ngIf="showSpinner" class="lead">Synthesizing Joke. Wait for it...</p>
   <p *ngFor="let alert of alerts" class="mt-5">
     <ngb-alert [type]="alert.type" (close)="closeAlert(alert)">{{
       alert.message
