@@ -106,7 +106,9 @@ export class PollyJokeComponent implements OnInit, OnDestroy {
     this.audio.on("end", () => {
       this.hasPlayed = true;
       this.isPlaying = false;
-      Howler.unload();
+      setTimeout(() => {
+        Howler.unload();
+      }, 500);
       this.app.tick();
     });
     this.audio.play();
