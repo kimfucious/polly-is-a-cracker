@@ -31,11 +31,11 @@
     </small>
   </div>
   <button
-    [hidden]="showSpinner"
-    [disabled]="model.joke.length > 300 || model.joke.length < 3"
-    class="btn btn-outline-danger mb-3"
+    [disabled]="model.joke.length > 300 || model.joke.length < 3 || showSpinner"
+    class="btn mb-3"
+    [ngClass]="!showSpinner ? 'btn-success' : 'btn-danger'"
     type="submit"
   >
-    Speak!
+    {{ !showSpinner ? "Tell Joke" : "Wait for it..." }}
   </button>
 </form>
