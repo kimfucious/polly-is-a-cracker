@@ -46,6 +46,7 @@ export class PollyJokeComponent implements OnInit, OnDestroy {
   }
 
   getNewJoke() {
+    this.isLoaded = false;
     if (this.subscription) {
       this.subscription.unsubscribe();
     }
