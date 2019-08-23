@@ -1,8 +1,12 @@
 <div class="d-flex flex-column align-items-center text-center">
   <app-byoj-form
     (jokeChange)="changeJoke($event)"
+    (pollySpeak)="sayNewUserJoke($event)"
+    (teachPolly)="startNewUserJoke($event)"
     (voiceChange)="changeVoice($event)"
-    (newUserJoke)="startNewUserJoke($event)"
+    [hasPlayed]="hasPlayed"
+    [isLoaded]="isLoaded"
+    [isPlaying]="isPlaying"
     [showSpinner]="showSpinner"
   ></app-byoj-form>
   <p *ngFor="let alert of alerts" class="mt-5">

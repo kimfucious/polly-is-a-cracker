@@ -1,8 +1,8 @@
 <div class="d-flex flex-column align-items-center text-center">
   <app-polly-form (voiceChange)="changeVoice($event)"></app-polly-form>
   <button
-    *ngIf="joke.id !== temp.id"
-    [disabled]="!isLoaded"
+    *ngIf="!hasPlayed"
+    [disabled]="!isLoaded || isPlaying"
     (click)="tellJoke()"
     class="btn btn-block mb-3"
     [ngClass]="isLoaded ? 'btn-success' : 'btn-danger'"
@@ -10,8 +10,8 @@
     {{ isLoaded ? "Tell Joke" : "Wait for it..." }}
   </button>
   <button
-    [disabled]="!isPlayed"
-    *ngIf="isLoaded && joke.id === temp.id && joke.id !== '9999'"
+    [disabled]="!hasPlayed"
+    *ngIf="isLoaded && hasPlayed"
     (click)="getNewJoke()"
     class="btn btn-block btn-danger mb-3"
   >

@@ -15,8 +15,9 @@ import { PollyService } from "src/app/services/polly.service";
 export class PollyJokeComponent implements OnInit, OnDestroy {
   alerts: Alert[];
   audio: any;
+  hasPlayed = false;
   isLoaded = false;
-  isPlayed = false;
+  isPlaying = false;
   joke: Joke = { id: "9999", joke: "", status: null };
   temp: Joke = { id: "", joke: "", status: null };
   speechParams: SpeechParams;
@@ -46,13 +47,14 @@ export class PollyJokeComponent implements OnInit, OnDestroy {
   }
 
   getNewJoke() {
+    this.hasPlayed = false;
     this.isLoaded = false;
+    this.isPlaying = false;
     if (this.subscription) {
       this.subscription.unsubscribe();
     }
     this.clearAlerts();
     this.joke = { id: "", joke: "", status: null };
-    console.log("Getting new joke...");
     this.subscription = this.jokeService.getRandomJoke().subscribe(joke => {
       this.temp = joke;
       this.speechParams.Text = joke.joke;
@@ -76,7 +78,9 @@ export class PollyJokeComponent implements OnInit, OnDestroy {
     this.alerts = [];
   }
   doPolly() {
+    this.hasPlayed = false;
     this.isLoaded = false;
+    this.isPlaying = false;
     this.pollyService
       .getPollyUrl(this.speechParams)
       .then(url => {
@@ -89,12 +93,8 @@ export class PollyJokeComponent implements OnInit, OnDestroy {
       });
   }
   setupHowler(sourceUrl: string) {
-    console.log("creating howler...");
-    console.log(sourceUrl);
     this.audio = new Howl({ src: [sourceUrl], format: ["mp3"] });
-    console.log(this.audio._src);
     this.audio.once("load", () => {
-      console.log("Loaded!");
       this.isLoaded = true;
       this.app.tick();
     });
@@ -102,13 +102,14 @@ export class PollyJokeComponent implements OnInit, OnDestroy {
 
   tellJoke() {
     this.joke = this.temp;
-    this.audio.play();
+    this.audio.off();
     this.audio.on("end", () => {
-      console.log("Played!");
-      this.isPlayed = true;
+      this.hasPlayed = true;
+      this.isPlaying = false;
       Howler.unload();
-      this.audio = {};
       this.app.tick();
     });
+    this.audio.play();
+    this.isPlaying = true;
   }
 }

@@ -1,5 +1,6 @@
 import { Alert } from "../../models/Alert";
-import { Component, OnInit } from "@angular/core";
+import { Component, OnInit, ApplicationRef } from "@angular/core";
+import { Howl, Howler } from "howler";
 import { PollyService } from "src/app/services/polly.service";
 import { SpeechParams } from "src/app/models/SpeechParams";
 import { Subscription } from "rxjs";
@@ -11,13 +12,19 @@ import { Subscription } from "rxjs";
 })
 export class ByojJokeComponent implements OnInit {
   alerts: Alert[];
-  audio = new Audio();
+  audio: Howl;
   audioSource: string;
+  hasPlayed = false;
+  isLoaded = false;
+  isPlaying = false;
   joke: string;
-  showSpinner: boolean;
+  showSpinner = false;
   speechParams: SpeechParams;
   subscription: Subscription;
-  constructor(private pollyService: PollyService) {}
+  constructor(
+    private app: ApplicationRef,
+    private pollyService: PollyService
+  ) {}
 
   ngOnInit() {
     this.speechParams = {
@@ -29,10 +36,10 @@ export class ByojJokeComponent implements OnInit {
       VoiceId: "Joanna"
     };
 
-    this.audio.addEventListener("canplaythrough", () => {
-      this.showSpinner = false;
-      this.audio.play();
-    });
+    // this.audio.addEventListener("canplaythrough", () => {
+    //   this.showSpinner = false;
+    //   this.audio.play();
+    // });
   }
   changeJoke(joke: string) {
     this.joke = joke;
@@ -45,7 +52,7 @@ export class ByojJokeComponent implements OnInit {
       delete this.speechParams.Engine;
     }
     if (this.joke) {
-      this.sayNewUserJoke(this.joke, true);
+      this.buildNewUserJoke(this.joke, true);
     }
   }
   closeAlert(alert: Alert) {
@@ -57,22 +64,39 @@ export class ByojJokeComponent implements OnInit {
 
   startNewUserJoke(joke: string) {
     this.joke = joke;
-    this.sayNewUserJoke(joke);
+    this.buildNewUserJoke(joke);
   }
-  async sayNewUserJoke(joke: string, isVoiceChanged: boolean = false) {
+  async buildNewUserJoke(joke: string, isVoiceChanged: boolean = false) {
     if (this.speechParams.Text === joke && !isVoiceChanged) {
       console.log("Repeat!");
       this.audio.play();
     } else {
+      this.hasPlayed = false;
+      this.isLoaded = false;
+      this.isPlaying = false;
       this.speechParams.Text = joke;
       this.showSpinner = true;
       try {
         const url = await this.pollyService.getPollyUrl(this.speechParams);
-        this.audio.src = url;
+        this.audio = new Howl({ src: [url], format: ["mp3"] });
+        this.audio.once("load", () => {
+          this.showSpinner = false;
+          this.isLoaded = true;
+          this.app.tick();
+        });
         this.audio.load();
       } catch (error) {
         this.alerts.push({ type: "danger", message: error });
       }
     }
+  }
+  sayNewUserJoke() {
+    this.isPlaying = true;
+    this.audio.play();
+    this.audio.on("end", () => {
+      this.isPlaying = false;
+      this.hasPlayed = true;
+      this.app.tick();
+    });
   }
 }

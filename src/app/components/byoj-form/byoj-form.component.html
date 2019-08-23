@@ -1,4 +1,4 @@
-<form #byojForm="ngForm" class="d-flex flex-column" (ngSubmit)="onSubmit()">
+<form #byojForm="ngForm" class="d-flex flex-column">
   <div class="form-group">
     <label for="voice">Select Voice</label>
     <select
@@ -31,12 +31,43 @@
       {{ model.joke.length }} / 300
     </small>
   </div>
+  <p>played: {{ hasPlayed }}</p>
+  <p>loaded: {{ isLoaded }}</p>
+  <p>playing: {{ isPlaying }}</p>
+  <p>showSpinner: {{ showSpinner }}</p>
+  <p>is dirty: {{ textAreaIsDirty }}</p>
   <button
+    *ngIf="!isLoaded && !hasPlayed"
     [disabled]="model.joke.length > 300 || model.joke.length < 3 || showSpinner"
+    [ngClass]="
+      !isLoaded && !hasPlayed && !showSpinner ? 'btn-success' : 'btn-danger'
+    "
     class="btn mb-3"
-    [ngClass]="!showSpinner ? 'btn-success' : 'btn-danger'"
-    type="submit"
+    (click)="onTeachPolly()"
+    type="button"
   >
-    {{ !showSpinner ? "Tell Joke" : "Wait for it..." }}
+    {{
+      !isLoaded && !hasPlayed && !showSpinner
+        ? "Teach Polly Joke"
+        : "Wait for it..."
+    }}
+  </button>
+  <button
+    [disabled]="isPlaying"
+    *ngIf="isLoaded && !textAreaIsDirty"
+    class="btn mb-3 btn-success"
+    (click)="onPollySpeak()"
+    type="button"
+  >
+    Tell Joke
+  </button>
+  <button
+    *ngIf="isLoaded && hasPlayed && textAreaIsDirty"
+    [disabled]="model.joke.length > 300 || model.joke.length < 3 || showSpinner"
+    class="btn btn-success mb-3"
+    (click)="onTeachPolly()"
+    type="button"
+  >
+    Teach Polly Joke
   </button>
 </form>
