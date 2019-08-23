@@ -1,9 +1,9 @@
 <form #voiceForm="ngForm">
-  <div class="form-group">
+  <div class="d-flex flex-column form-group">
     <label for="voice">Select Voice</label>
     <select
       (change)="onVoiceChange()"
-      class="custom-select mb-3"
+      class="custom-select"
       id="voice"
       required
       [(ngModel)]="model.voice"
