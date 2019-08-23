@@ -1,30 +1,27 @@
 <div class="d-flex flex-column align-items-center text-center">
   <app-polly-form (voiceChange)="changeVoice($event)"></app-polly-form>
   <button
-    [disabled]="!isLoaded"
     *ngIf="joke.id !== temp.id"
+    [disabled]="!isLoaded"
     (click)="tellJoke()"
-    class="btn btn-success mb-3"
+    class="btn btn-block mb-3"
+    [ngClass]="isLoaded ? 'btn-success' : 'btn-danger'"
   >
-    Tell Joke
+    {{ isLoaded ? "Tell Joke" : "Wait for it..." }}
   </button>
   <button
     [disabled]="!isPlayed"
-    *ngIf="joke.id !== '9999' && joke.id === temp.id"
+    *ngIf="isLoaded && joke.id === temp.id && joke.id !== '9999'"
     (click)="getNewJoke()"
-    class="btn btn-danger mb-3"
+    class="btn btn-block btn-danger mb-3"
   >
     Get Another Joke
   </button>
-  <a
-    [hidden]="!isLoaded"
-    class="btn btn-link text-muted mb-3"
-    [routerLink]="['/byoj']"
+  <a class="btn btn-link text-muted mb-3" [routerLink]="['/byoj']"
     >Got your own joke?</a
   >
-  <p [hidden]="isLoaded" class="lead">
-    Synthesizing Joke. Wait for it...
-  </p>
+</div>
+<div class="d-flex flex-column align-items-center text-center">
   <div [hidden]="!joke?.joke" class="card border-danger mt-2">
     <div class="card-body">
       <em>
