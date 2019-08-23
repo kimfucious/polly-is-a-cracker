@@ -2,10 +2,10 @@
 
 ## About
 
-- This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 8.2.0.
+- This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 8.2.0
 - Audio handled by [howler.js](https://www.npmjs.com/package/howler)
 - Base Polly code example started from [here](https://docs.aws.amazon.com/code-samples/latest/catalog/javascript-browserstart-polly.html.html)
-- Humour provided by the groan-worthy, [icanhazdadjoke](https://icanhazdadjoke.com/api) API.
+- Humour provided by the groan-worthy, [icanhazdadjoke](https://icanhazdadjoke.com/api) API
 - Voices are made possible by [Amazon Polly](https://aws.amazon.com/polly/)
 
 ## Notes
