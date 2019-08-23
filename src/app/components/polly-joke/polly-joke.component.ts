@@ -1,15 +1,11 @@
-import { Component, OnInit, OnDestroy } from "@angular/core";
-import { JokeService } from "src/app/services/joke.service";
+import { Component, OnInit, OnDestroy, ApplicationRef } from "@angular/core";
+import { Alert } from "../../models/Alert";
+import { Howl, Howler } from "howler";
 import { Joke } from "src/app/models/Joke";
+import { JokeService } from "src/app/services/joke.service";
 import { SpeechParams } from "src/app/models/SpeechParams";
 import { Subscription } from "rxjs";
-import { config, CognitoIdentityCredentials, Polly } from "aws-sdk";
-import { Alert } from "../../models/Alert";
-
-config.region = "us-west-2";
-config.credentials = new CognitoIdentityCredentials({
-  IdentityPoolId: "us-west-2:ff9b3fd3-e705-489e-a20f-62a22f58b1b0"
-});
+import { PollyService } from "src/app/services/polly.service";
 
 @Component({
   selector: "app-polly-joke",
@@ -18,15 +14,19 @@ config.credentials = new CognitoIdentityCredentials({
 })
 export class PollyJokeComponent implements OnInit, OnDestroy {
   alerts: Alert[];
-  audio = new Audio();
-  audioSource: string;
-  joke: Joke;
-  temp: Joke;
-  showSpinner: boolean;
+  audio: any;
+  isLoaded = false;
+  isPlayed = false;
+  joke: Joke = { id: "9999", joke: "", status: null };
+  temp: Joke = { id: "", joke: "", status: null };
   speechParams: SpeechParams;
   subscription: Subscription;
 
-  constructor(private jokeService: JokeService) {}
+  constructor(
+    private app: ApplicationRef,
+    private jokeService: JokeService,
+    private pollyService: PollyService
+  ) {}
   ngOnDestroy() {
     if (this.subscription) {
       this.subscription.unsubscribe();
@@ -42,22 +42,33 @@ export class PollyJokeComponent implements OnInit, OnDestroy {
       VoiceId: "Joanna"
     };
 
-    this.audio.addEventListener("canplaythrough", () => {
-      this.showSpinner = false;
-      this.joke = this.temp;
-      this.audio.play();
-    });
+    this.getNewJoke();
   }
+
   getNewJoke() {
+    if (this.subscription) {
+      this.subscription.unsubscribe();
+    }
+    this.isLoaded = false;
     this.clearAlerts();
     this.joke = { id: "", joke: "", status: null };
-    this.showSpinner = true;
-    this.subscription = this.jokeService.getRandomJoke().subscribe(res => {
-      this.temp = res;
-      this.speechParams.Text = res.joke;
-      this.speakText();
+    console.log("Getting new joke...");
+    this.subscription = this.jokeService.getRandomJoke().subscribe(joke => {
+      this.temp = joke;
+      this.speechParams.Text = joke.joke;
+      this.pollyService
+        .getPollyUrl(this.speechParams)
+        .then(url => {
+          this.setupHowler(url);
+        })
+        .catch(error => {
+          console.log("Error preparing joke: ", error);
+          this.alerts.push({ type: "danger", message: error.message });
+          this.app.tick();
+        });
     });
   }
+
   changeVoice(voice: string) {
     this.speechParams.VoiceId = voice;
     if (voice === "Matthew" || voice === "Joanna") {
@@ -72,22 +83,28 @@ export class PollyJokeComponent implements OnInit, OnDestroy {
   clearAlerts() {
     this.alerts = [];
   }
-  speakText() {
-    const signer = new Polly.Presigner();
 
-    signer.getSynthesizeSpeechUrl(
-      this.speechParams,
-      700,
-      (error: Error, url: string) => {
-        if (error) {
-          console.log(error);
-          this.alerts.push({ type: "danger", message: error.message });
-          this.showSpinner = false;
-        } else {
-          this.audio.src = url;
-          this.audio.load();
-        }
-      }
-    );
+  setupHowler(sourceUrl: string) {
+    console.log("creating howler...");
+    console.log(sourceUrl);
+    this.audio = new Howl({ src: [sourceUrl], format: ["mp3"] });
+    console.log(this.audio._src);
+    this.audio.once("load", () => {
+      console.log("Loaded!");
+      this.isLoaded = true;
+      this.app.tick();
+    });
+  }
+
+  tellJoke() {
+    this.joke = this.temp;
+    this.audio.play();
+    this.audio.on("end", () => {
+      console.log("Played!");
+      this.isPlayed = true;
+      Howler.unload();
+      this.audio = {};
+      this.app.tick();
+    });
   }
 }
