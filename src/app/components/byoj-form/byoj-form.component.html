@@ -31,11 +31,6 @@
       {{ model.joke.length }} / 300
     </small>
   </div>
-  <p>played: {{ hasPlayed }}</p>
-  <p>loaded: {{ isLoaded }}</p>
-  <p>playing: {{ isPlaying }}</p>
-  <p>showSpinner: {{ showSpinner }}</p>
-  <p>is dirty: {{ textAreaIsDirty }}</p>
   <button
     *ngIf="!isLoaded && !hasPlayed"
     [disabled]="model.joke.length > 300 || model.joke.length < 3 || showSpinner"
