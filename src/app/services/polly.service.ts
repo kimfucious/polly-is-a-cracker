@@ -26,7 +26,6 @@ export class PollyService {
             console.log("Error getting Polly URL.");
             reject(error.message);
           } else {
-            console.log(speechParams.Text);
             resolve(url);
           }
         }
